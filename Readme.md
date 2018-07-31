@@ -6,6 +6,35 @@
 * Install squareroute
 * Install Cluster Autoscaler
 
+## Setting up Cluster
+
+```bash
+git clone https://github.com/EamonKeane/airflow-GKE-k8sExecutor-helm
+cd airflow-GKE-k8sExecutor-helm
+
+RESOURCE_GROUP=squareroute-develop
+LOCATION=westeurope
+STORAGE_ACCOUNT_NAME=squareroutedevelopairflow
+POSTGRES_DATABASE_INSTANCE_NAME=squareroute-develop-airflow
+NODE_VM_SIZE=Standard_DS14_v2
+NODE_COUNT=2
+./aks-sql-k8s-install.sh \
+  --resource-group=$RESOURCE_GROUP \
+  --location=$LOCATION \
+  --storage-account-name=$STORAGE_ACCOUNT_NAME \
+  --postgres-database-instance-name=$POSTGRES_DATABASE_INSTANCE_NAME \
+  --node-vm-size=$NODE_VM_SIZE \
+  --node-count=$NODE_COUNT
+```
+
+```bash
+helm upgrade \
+    --install \
+    --values airflow/azure-airflow-values.yaml \
+    airflow \
+    airflow
+```
+
 ## Setting up helm
 
 Add the following repos to your local helm client.

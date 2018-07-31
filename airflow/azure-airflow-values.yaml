@@ -1,0 +1,63 @@
+namespace: airflow
+
+azure:
+  enabled: true
+  location: westeurope
+  azureFileStorageClassName: azurefile-airflow
+  createAzureFileStorageClass: true
+  createLogPVC: true
+  createDagPVC: true
+  storageAccountName: squarerouteairflow
+
+webScheduler:
+  tag: "0.5-oracle"
+  imagePullPolicy: Always
+  installWebServer: true
+  installScheduler: true
+  dagsVolumeClaim: airflow-dags
+  web:
+    authenticate: False
+    authBackend: airflow.contrib.auth.backends.google_auth
+    googleAuthDomain: logistio.ie
+    googleAuthSecret: google-oauth
+    googleAuthSecretClientIDKey: client_id
+    googleAuthSecretClientSecretKey: client_secret
+  preHook: 
+    install: true
+    initContainer: false
+  scheduler:
+    dagVolumeReadOnly: false
+    schedulerHeartbeatSec: 1
+
+dagVolume:
+  installPV: false
+  installPVC: false
+  nfsServer: "10.0.0.2"
+  nfsPath: /airflow
+
+logVolume:
+  nfsServer: "10.0.0.2"
+  nfsPath: /airflow
+  installPV: false
+  installPVC: false
+
+createWorkerRBAC: true
+installPostgresService: false
+installCloudsqlProxyDeploy: false
+
+airflowCfg:
+  core:
+    executor: KubernetesExecutor
+  kubernetes:
+    namespace: airflow
+    workerContainerRepository: quay.io/eamonkeane/airflow-k8s
+    workerContainerTag: "0.5-oracle"
+  kubernetesNodeSelectors: |-
+ingress:
+  enabled: false
+  hosts: 
+    - airflow.mysite.io
+  tls:
+  - hosts:
+    - airflow.mysite.io
+    secretName: airflow.mysite.io
