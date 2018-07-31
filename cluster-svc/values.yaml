@@ -1,0 +1,69 @@
+# Default values for cluster-svc.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+ssl:
+  kibana:
+    enabled: true
+    url: kibana-dev.squareroute.io
+
+prometheus-operator:
+  enabled: true
+
+kube-prometheus:
+  deployKubeScheduler: False
+  deployKubeControllerManager: False
+  enabled: true
+
+elasticsearch:
+  enabled: true
+  appVersion: "6.3.1"
+  image:
+    tag: "6.3.1"
+
+kibana:
+  enabled: true
+  env:
+    ELASTICSEARCH_URL: http://cluster-svc-elasticsearch-client:9200
+
+fluentd-elasticsearch:
+  enabled: true
+  elasticsearch:
+    host: cluster-svc-elasticsearch-client
+
+nginx-ingress:
+  enabled: true
+  controller:
+    service:
+      externalTrafficPolicy: Local
+
+cert-manager:
+  enabled: true
+  ingressShim:
+    defaultIssuerName: letsencrypt-prod
+    defaultIssuerKind: ClusterIssuer
+
+elasticsearch-curator:
+  enabled: true
+  config:
+    elasticsearch:
+      hosts: 
+        - cluster-svc-elasticsearch-client
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

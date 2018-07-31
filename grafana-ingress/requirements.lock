@@ -1,0 +1,6 @@
+dependencies:
+- name: oauth2-proxy
+  repository: http://kubernetes-charts.storage.googleapis.com/
+  version: 0.5.0
+digest: sha256:52d721b6ddbad8995d87ac83aa781a8e4fccaaf1ba091145f443efa42ce8e7d2
+generated: 2018-07-28T22:19:46.973756386+01:00

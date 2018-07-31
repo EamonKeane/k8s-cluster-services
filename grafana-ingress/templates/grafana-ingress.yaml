@@ -1,0 +1,24 @@
+{{- if .Values.ssl.grafana.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
+spec:
+  rules:
+  - host: {{ .Values.ssl.grafana.url }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.ssl.grafana.service }}
+          servicePort: 3000
+        path: /
+  tls:
+  - hosts:
+    - {{ .Values.ssl.grafana.url }}
+    secretName: grafana-tls
+{{- end -}}

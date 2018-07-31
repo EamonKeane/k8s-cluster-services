@@ -1,0 +1,12 @@
+
+ssl:
+  kibana:
+    enabled: true
+    url: kibana-dev-sq.logistio.ie
+    service: cluster-svc-kibana
+
+oauth2-proxy:
+  config:
+    clientID: 
+    clientSecret:  
+    cookieSecret: 

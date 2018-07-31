@@ -1,0 +1,24 @@
+{{- if .Values.ssl.kibana.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: kibana
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
+spec:
+  rules:
+  - host: {{ .Values.ssl.kibana.url }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.ssl.kibana.service }}
+          servicePort: 5601
+        path: /
+  tls:
+  - hosts:
+    - {{ .Values.ssl.kibana.url }}
+    secretName: kibana-tls
+{{- end -}}

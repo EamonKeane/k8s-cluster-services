@@ -1,0 +1,12 @@
+
+ssl:
+  grafana:
+    enabled: true
+    url: grafana-dev-sq.logistio.ie
+    service: cluster-svc-grafana
+
+oauth2-proxy:
+  config:
+    clientID: 
+    clientSecret: 
+    cookieSecret: 

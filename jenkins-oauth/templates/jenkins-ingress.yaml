@@ -1,0 +1,24 @@
+{{- if .Values.ssl.jenkins.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: jenkins
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/auth-url: "https://$host/oauth2/auth"
+    nginx.ingress.kubernetes.io/auth-signin: "https://$host/oauth2/start?rd=$request_uri"
+spec:
+  rules:
+  - host: {{ .Values.ssl.jenkins.url }}
+    http:
+      paths:
+      - backend:
+          serviceName: {{ .Values.ssl.jenkins.service }}
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+    - {{ .Values.ssl.jenkins.url }}
+    secretName: jenkins-tls
+{{- end -}}

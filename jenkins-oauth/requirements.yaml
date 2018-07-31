@@ -1,0 +1,10 @@
+dependencies:
+  - name: jenkins
+    version: ^0.16.6
+    repository: http://kubernetes-charts.storage.googleapis.com/
+    condition: jenkins.enabled
+dependencies:
+  - name: oauth2-proxy
+    version: ^0.5.0
+    repository: http://kubernetes-charts.storage.googleapis.com/
+    condition: jenkins.enabled

@@ -1,0 +1,57 @@
+ssl:
+  jenkins:
+    enabled: true
+    url: jenkins-sq.logistio.ie
+    service: jenkins
+
+oauth2-proxy:
+  config:
+    clientID: 
+    clientSecret: 
+    cookieSecret: 
+
+jenkins:
+  enabled: true
+  Master:
+    Image: jenkins/jenkins
+    ImageTag: lts
+    AdminUser: admin
+    AdminPassword: admin
+    resources:
+      {requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}
+    HealthProbes: False
+    UseSecurity: True
+    ServiceType: ClusterIP
+    ScriptApproval:
+      - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
+      - "new groovy.json.JsonSlurperClassic"
+      - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods leftShift java.util.Map java.util.Map"
+      - "staticMethod org.codehaus.groovy.runtime.DefaultGroovyMethods split java.lang.String"
+      - "method java.util.Collection toArray"
+      - "staticMethod org.kohsuke.groovy.sandbox.impl.Checker checkedCall java.lang.Object boolean boolean java.lang.String java.lang.Object[]"
+      - "staticMethod org.kohsuke.groovy.sandbox.impl.Checker checkedGetProperty java.lang.Object boolean boolean java.lang.Object"
+
+    InstallPlugins:
+    - kubernetes:1.10.1
+    - workflow-aggregator:2.5
+    - credentials-binding:1.16
+    - git:3.9.1
+    - blueocean:1.7.1
+    - pipeline-github-lib:1.0
+
+  Agent:
+    Enabled: true
+    Image: jenkins/jnlp-slave
+    ImageTag: 3.19-1
+
+  Persistence:
+    Enabled: False
+    Annotations: {}
+    AccessMode: ReadWriteOnce
+    Size: 8Gi
+
+  rbac:
+    install: true
+    serviceAccountName: default
+    apiVersion: v1
+    roleRef: cluster-admin
