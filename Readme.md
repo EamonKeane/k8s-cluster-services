@@ -14,23 +14,39 @@ cd airflow-GKE-k8sExecutor-helm
 
 RESOURCE_GROUP=squareroute-develop
 LOCATION=westeurope
-STORAGE_ACCOUNT_NAME=squareroutedevelopairflow
+STORAGE_ACCOUNT_NAME=squareroutedevairflow
 POSTGRES_DATABASE_INSTANCE_NAME=squareroute-develop-airflow
 NODE_VM_SIZE=Standard_DS14_v2
 NODE_COUNT=2
+AIRFLOW_NAMESPACE=airflow
 ./aks-sql-k8s-install.sh \
   --resource-group=$RESOURCE_GROUP \
   --location=$LOCATION \
   --storage-account-name=$STORAGE_ACCOUNT_NAME \
   --postgres-database-instance-name=$POSTGRES_DATABASE_INSTANCE_NAME \
   --node-vm-size=$NODE_VM_SIZE \
-  --node-count=$NODE_COUNT
+  --node-count=$NODE_COUNT \
+  --airflow-namespace=$AIRFLOW_NAMESPACE
 ```
 
+* In airflow/azure-airflow-values.yaml, change `STORAGE_ACCOUNT_NAME` to the above: 
+
 ```bash
+sed -i "" -e "s/storageAccountName:.*/storageAccountName: ${STORAGE_ACCOUNT_NAME}/" airflow/azure-airflow-values.yaml
+sed -i "" -e "s/namespace:.*/namespace: ${AIRFLOW_NAMESPACE}/" airflow/azure-airflow-values.yaml
+sed -i "" -e "s/location:.*/location: ${LOCATION}/" airflow/azure-airflow-values.yaml
+```
+
+Copy and paste the below into the context of the root of the airflow repo.
+
+```bash
+VALUES_FILE_ROOT_PATH=/Users/Eamon/kubernetes/k8s-cluster-services
+VALUES_FILE_RELATIVE_PATH=airflow/azure-airflow-values.yaml
+VALUES_FILE_FULL_PATH=$VALUES_FILE_ROOT_PATH/$VALUES_FILE_RELATIVE_PATH
 helm upgrade \
     --install \
-    --values airflow/azure-airflow-values.yaml \
+    --namespace $AIRFLOW_NAMESPACE \
+    --values $VALUES_FILE_FULL_PATH \
     airflow \
     airflow
 ```

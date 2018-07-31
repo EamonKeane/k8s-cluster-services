@@ -7,7 +7,7 @@ azure:
   createAzureFileStorageClass: true
   createLogPVC: true
   createDagPVC: true
-  storageAccountName: squarerouteairflow
+  storageAccountName: squareroutedevairflow
 
 webScheduler:
   tag: "0.5-oracle"
