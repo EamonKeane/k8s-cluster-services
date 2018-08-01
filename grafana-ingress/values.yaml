@@ -2,7 +2,7 @@
 ssl:
   grafana:
     enabled: true
-    url: grafana-dev-sq.logistio.ie
+    url: grafana-develop.squareroute.io
     service: cluster-svc-grafana
 
 oauth2-proxy:

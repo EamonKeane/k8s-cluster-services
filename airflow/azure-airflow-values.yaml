@@ -16,7 +16,7 @@ webScheduler:
   installScheduler: true
   dagsVolumeClaim: airflow-dags
   web:
-    authenticate: False
+    authenticate: true
     authBackend: airflow.contrib.auth.backends.google_auth
     googleAuthDomain: logistio.ie
     googleAuthSecret: google-oauth
@@ -54,10 +54,10 @@ airflowCfg:
     workerContainerTag: "0.5-oracle"
   kubernetesNodeSelectors: |-
 ingress:
-  enabled: false
+  enabled: true
   hosts: 
-    - airflow.mysite.io
+    - airflow-develop.squareroute.io
   tls:
   - hosts:
-    - airflow.mysite.io
-    secretName: airflow.mysite.io
+    - airflow-develop.squareroute.io
+    secretName: airflow-tls

@@ -1,7 +1,7 @@
 ssl:
   jenkins:
     enabled: true
-    url: jenkins-sq.logistio.ie
+    url: jenkins.squareroute.io
     service: jenkins
 
 oauth2-proxy:
@@ -17,6 +17,7 @@ jenkins:
     ImageTag: lts
     AdminUser: admin
     AdminPassword: admin
+    # HostName: jenkins.squareroute.io
     resources:
       {requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}
     HealthProbes: False
@@ -45,7 +46,7 @@ jenkins:
     ImageTag: 3.19-1
 
   Persistence:
-    Enabled: False
+    Enabled: True
     Annotations: {}
     AccessMode: ReadWriteOnce
     Size: 8Gi

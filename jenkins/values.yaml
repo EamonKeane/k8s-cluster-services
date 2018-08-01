@@ -7,6 +7,7 @@ jenkins:
       {requests: {cpu: 50m, memory: 256Mi}, limits: {cpu: 2000m, memory: 4096Mi}}
     HealthProbes: False
     UseSecurity: True
+    JavaOpts: "-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=1000"
     ServiceType: ClusterIP
     HostName: jenkins.squareroute.io
     Ingress:

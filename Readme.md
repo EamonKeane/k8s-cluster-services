@@ -37,6 +37,29 @@ sed -i "" -e "s/namespace:.*/namespace: ${AIRFLOW_NAMESPACE}/" airflow/azure-air
 sed -i "" -e "s/location:.*/location: ${LOCATION}/" airflow/azure-airflow-values.yaml
 ```
 
+* My domain: `airflow-develop.squareroute.io`
+
+* Create the oauth2 secret on Google with the following configuration:
+
+* Navigate to https://console.cloud.google.com/apis/credentials?project=$PROJECT
+* Click Create Credentials
+* Select OAuth Client ID
+* Select Web Application
+* Enter $OAUTH_APP_NAME as the Name
+* In authorized redirect URLs, enter https://$MY_DOMAIN/oauth2callback
+
+Click download json at the top of the page.
+
+```bash
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-tqm6pj092srm2146lpqa9bv3oq9lpjp9.apps.googleusercontent.com.json
+CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
+CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
+kubectl create secret generic google-oauth \
+        --namespace airflow \
+        --from-literal=client_id=$CLIENT_ID \
+        --from-literal=client_secret=$CLIENT_SECRET
+```
+
 Copy and paste the below into the context of the root of the airflow repo.
 
 ```bash
@@ -146,6 +169,8 @@ Edit the grafana configmap to put in the correct prometheus name. This is becaus
 Edit the grafana configmap:
 
 ```bash
+RELEASE_NAME=cluster-svc
+CHART_NAMESPACE=cluster-svc
 GRAFANA_CONFIGMAP=$RELEASE_NAME-grafana
 echo "%s#http://$RELEASE_NAME:9090#http://$RELEASE_NAME-prometheus:9090#g" | tr -d '\n' | pbcopy
 kubectl edit cm $GRAFANA_CONFIGMAP --namespace $CHART_NAMESPACE
@@ -154,6 +179,8 @@ kubectl edit cm $GRAFANA_CONFIGMAP --namespace $CHART_NAMESPACE
 Press the `:` key to get into `vim` command mode and `CMD + v` to paste.
 
 Press `esc` and `wq` to save and exit.
+
+Delete the grafana pod to restart it.
 
 ## Kibana log setup
 
@@ -191,6 +218,7 @@ EOF
 ## Install SSL ingress for kibana and grafana
 
 * Get credentials from Google dashboard (CLIENT_ID, CLIENT_SECRET).
+* Ensure the callback url is of the form `${url}/oauth2/callback` for the form oauth2_proxy expects
 
 ```bash
 MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-233dtulm06to6sh9vt1115s0oeqb1ba7.apps.googleusercontent.com.json
@@ -219,9 +247,19 @@ helm dependency update grafana-ingress
 ```
 
 ```bash
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-u3v37s6rvigonaf7nhgn0usdrk029rt1.apps.googleusercontent.com.json
+CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
+CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
+COOKIE_SECRET=$(python -c 'import os,base64; print base64.urlsafe_b64encode(os.urandom(16))')
+```
+
+```bash
 helm upgrade \
     --install \
     --namespace $CHART_NAMESPACE \
+    --set oauth2-proxy.config.clientID=$CLIENT_ID \
+    --set oauth2-proxy.config.clientSecret=$CLIENT_SECRET \
+    --set oauth2-proxy.config.cookieSecret=$COOKIE_SECRET \
     grafana-ingress \
     grafana-ingress
 ```
@@ -255,11 +293,105 @@ kubectl delete service/prometheus-operated --namespace $CHART_NAMESPACE
 ## Install jenkins
 
 ```bash
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-imha6arufc1radnv9vnsv9jo4vfguslu.apps.googleusercontent.com.json
+CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
+CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
+COOKIE_SECRET=$(python -c 'import os,base64; print base64.urlsafe_b64encode(os.urandom(16))')
+```
+
+```bash
+helm upgrade \
+    --install \
+    --namespace cluster-svc \
+    --set oauth2-proxy.config.clientID=$CLIENT_ID \
+    --set oauth2-proxy.config.clientSecret=$CLIENT_SECRET \
+    --set oauth2-proxy.config.cookieSecret=$COOKIE_SECRET \
+    jenkins \
+    jenkins-oauth \
+    --debug \
+    --dry-run >> test-output.yaml
+```
+
+Without oauth:
+
+```bash
 helm upgrade \
     --install \
     --namespace cluster-svc \
     jenkins \
     jenkins
+```
+
+Install the secret in the namespace for pull secrets.
+
+```bash
+SECRET_NAME=logistio-deploy-pull-secret
+NAMESPACE=default
+DOCKER_USERNAME=logistio-deploy
+DOCKER_PASSWORD=
+DOCKER_SERVER=quay.io/logistio
+kubectl create secret docker-registry $SECRET_NAME \
+        --namespace $NAMESPACE \
+        --docker-username=$DOCKER_USERNAME \
+        --docker-password=$DOCKER_PASSWORD \
+        --docker-email="" \
+        --docker-server=$DOCKER_SERVER
+
+NAMESPACE=default
+SERVICE_ACCOUNT=default
+kubectl patch serviceaccount --namespace $NAMESPACE $SERVICE_ACCOUNT \
+  -p "{\"imagePullSecrets\": [{\"name\": \"$SECRET_NAME\"}]}"
+```
+
+Add the logistio-deploy-quay-password
+
+```bash
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+data:
+  docker_password:
+  <GET FROM LASTPASS>
+kind: Secret
+metadata:
+  name: logistio-deploy-quay-password
+  namespace: cluster-svc
+type: Opaque
+EOF
+```
+
+Create the azure connection secret
+
+```bash
+cat <<EOF | kubectl create -f -
+apiVersion: v1
+data:
+  connection_string: <GET FROM LASTPASS>
+kind: Secret
+metadata:
+  name: az-fileshare-connection-string
+  namespace: cluster-svc
+type: Opaque
+EOF
+```
+
+Create the kubeconfig secrets for develop and production.
+
+```bash
+NAMESPACE=cluster-svc
+CLUSTER_NAME=squareroute-develop
+RESOURCE_GROUP=squareroute-develop
+TEMP_DIRECTORY=$PWD
+KUBECONFIG_FILE_OUTPUT=$PWD/kubeconfig
+az aks get-credentials \
+  --name $CLUSTER_NAME \
+  --admin \
+  --resource-group $RESOURCE_GROUP \
+  --file $KUBECONFIG_FILE_OUTPUT
+
+SECRET_NAME=develop-cluster-kubeconfig
+kubectl create secret generic $SECRET_NAME \
+    --namespace $NAMESPACE \
+    --from-file=$KUBECONFIG_FILE_OUTPUT
 ```
 
 ## Install just prometheus+grafana
