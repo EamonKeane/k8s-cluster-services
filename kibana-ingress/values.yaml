@@ -2,7 +2,7 @@
 ssl:
   kibana:
     enabled: true
-    url: kibana-dev-sq.logistio.ie
+    url: kibana-develop.squareroute.io
     service: cluster-svc-kibana
 
 oauth2-proxy:

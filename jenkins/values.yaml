@@ -8,7 +8,7 @@ jenkins:
     HealthProbes: False
     UseSecurity: True
     ServiceType: ClusterIP
-    HostName: jenkins-sq.logistio.ie
+    HostName: jenkins.squareroute.io
     Ingress:
       Annotations:
         kubernetes.io/ingress.class: nginx
@@ -16,7 +16,7 @@ jenkins:
       TLS:
       - secretName: jenkins-tls
         hosts:
-          - jenkins-sq.logistio.ie
+          - jenkins.squareroute.io
     ScriptApproval:
       - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
       - "new groovy.json.JsonSlurperClassic"

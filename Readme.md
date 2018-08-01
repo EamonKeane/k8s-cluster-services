@@ -29,7 +29,7 @@ AIRFLOW_NAMESPACE=airflow
   --airflow-namespace=$AIRFLOW_NAMESPACE
 ```
 
-* In airflow/azure-airflow-values.yaml, change `STORAGE_ACCOUNT_NAME` to the above: 
+* In airflow/azure-airflow-values.yaml, change `STORAGE_ACCOUNT_NAME` to the above:
 
 ```bash
 sed -i "" -e "s/storageAccountName:.*/storageAccountName: ${STORAGE_ACCOUNT_NAME}/" airflow/azure-airflow-values.yaml
@@ -51,7 +51,31 @@ helm upgrade \
     airflow
 ```
 
-## Setting up helm
+## Azure Cluster Permissions
+
+* The newly created cluster must be given access to the VNET and the ability to make resources in the cluster (such as a load balancer). The `clientId` can be gotten by the below:
+
+```bash
+CLUSTER_NAME=my-cluster
+RESOURCE_GROUP=my-resource-group
+az aks show \
+    --name ${CLUSTER_NAME} \
+    --resource-group ${RESOURCE_GROUP} -o json \
+    | jq .servicePrincipalProfile.clientId --raw-output \
+    | pbcopy
+```
+
+* Go to the dashboard, select the managed cluster in resource groups, this will be of the form:
+
+```bash
+"MC_${CLUSTER_NAME}_${RESOURCE_GROUP}_${LOCATION}"
+```
+
+* Select `Access Control`, select `+Add`, select role `owner`, in the `Select` box (third one down), paste in the `ClientId`. Click on the resulting username (e.g. it will appear as `theifberyl-cluster`), press `Save`.
+
+* Delete the `nginx-ingress` svc and re-install. LoadBalancer IP wil be provisioned in around 4 minutes.
+
+## Setting up Helm and master services chart
 
 Add the following repos to your local helm client.
 
@@ -166,7 +190,14 @@ EOF
 
 ## Install SSL ingress for kibana and grafana
 
-* Get credentials from Google dashboard (CLIENT_ID, CLIENT_SECRET)
+* Get credentials from Google dashboard (CLIENT_ID, CLIENT_SECRET).
+
+```bash
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-233dtulm06to6sh9vt1115s0oeqb1ba7.apps.googleusercontent.com.json
+CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
+CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
+COOKIE_SECRET=$(python -c 'import os,base64; print base64.urlsafe_b64encode(os.urandom(16))')
+```
 
 ```bash
 helm dependency update kibana-ingress
@@ -176,6 +207,9 @@ helm dependency update kibana-ingress
 helm upgrade \
     --install \
     --namespace $CHART_NAMESPACE \
+    --set oauth2-proxy.config.clientID=$CLIENT_ID \
+    --set oauth2-proxy.config.clientSecret=$CLIENT_SECRET \
+    --set oauth2-proxy.config.cookieSecret=$COOKIE_SECRET \
     kibana-ingress \
     kibana-ingress
 ```
