@@ -51,7 +51,7 @@ sed -i "" -e "s/location:.*/location: ${LOCATION}/" airflow/azure-airflow-values
 Click download json at the top of the page.
 
 ```bash
-MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-tqm6pj092srm2146lpqa9bv3oq9lpjp9.apps.googleusercontent.com.json
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-ncri1j04vkd23q19hfc9rpu73k2u9fck.apps.googleusercontent.com.json
 CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
 CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
 kubectl create secret generic google-oauth \
@@ -238,6 +238,17 @@ helm upgrade \
     --set oauth2-proxy.config.clientID=$CLIENT_ID \
     --set oauth2-proxy.config.clientSecret=$CLIENT_SECRET \
     --set oauth2-proxy.config.cookieSecret=$COOKIE_SECRET \
+    kibana-ingress \
+    kibana-ingress
+```
+
+For subsequent upgrades to reuse values:
+
+```bash
+helm upgrade \
+    --install \
+    --namespace $CHART_NAMESPACE \
+    --reuse-values \
     kibana-ingress \
     kibana-ingress
 ```
