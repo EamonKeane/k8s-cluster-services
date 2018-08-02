@@ -412,3 +412,27 @@ helm repo add coreos https://s3-eu-west-1.amazonaws.com/coreos-charts/stable/
 helm install coreos/prometheus-operator --name prometheus-operator --namespace $CHART_NAMESPACE
 helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
 ```
+
+SSH to azure node. <https://docs.microsoft.com/en-us/azure/aks/aks-ssh>
+
+```bash
+VM_USERNAME=azureuser
+NODE_NAME=aks-nodepool1-47278868-0
+CONTAINER_LIFETIME=600
+INTERNAL_IP=$(kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME -o json | jq .items[0].status.addresses[0].address --raw-output)
+DEPLOYMENT_NAME=aksssh
+LABELS="app=aksssh"
+kubectl run $POD_NAME --image=debian --labels=$LABELS --command sleep $CONTAINER_LIFETIME
+sleep 60
+POD_NAME=$(kubectl get po --selector=$LABELS -o json | jq .items[0].metadata.name --raw-output)
+kubectl exec $POD_NAME -- apt-get update
+kubectl exec $POD_NAME -- apt-get install openssh-client -y
+kubectl cp ~/.ssh/id_rsa $POD_NAME:/id_rsa
+kubectl exec $POD_NAME -- chmod 0600 id_rsa
+kubectl exec -it $POD_NAME -- ssh -i id_rsa $VM_USERNAME@$INTERNAL_IP
+# Say yes to accept commands
+# Run commands on VM node
+# Exit
+# Delete the deployment
+kubectl delete deploy --selector=$LABELS
+```
