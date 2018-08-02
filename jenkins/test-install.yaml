@@ -1,0 +1,8 @@
+jenkins:
+  Master:
+    HostName: jenkins2.squareroute.io
+    Ingress:
+      TLS:
+      - secretName: jenkins-tls
+        hosts:
+          - jenkins2.squareroute.io

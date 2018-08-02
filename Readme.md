@@ -413,6 +413,8 @@ helm install coreos/prometheus-operator --name prometheus-operator --namespace $
 helm install coreos/kube-prometheus --name kube-prometheus --namespace monitoring
 ```
 
+## Copying files to jenkins
+
 SSH to azure node. <https://docs.microsoft.com/en-us/azure/aks/aks-ssh>
 
 ```bash
@@ -435,4 +437,51 @@ kubectl exec -it $POD_NAME -- ssh -i id_rsa $VM_USERNAME@$INTERNAL_IP
 # Exit
 # Delete the deployment
 kubectl delete deploy --selector=$LABELS
+```
+
+Alternative (<https://www.lastcoolnameleft.com/2018/05/how-to-ssh-into-a-private-kubernetes-agent-node/>).
+
+```bash
+USER=azureuser
+kubectl run ssh-server --image=corbinu/ssh-server --port=22 --restart=Never
+kubectl port-forward ssh-server 2222:22
+cat ~/.ssh/id_rsa.pub | kubectl exec -i ssh-server -- /bin/bash -c "cat >> /root/.ssh/authorized_keys"
+NODE_NAME=aks-nodepool1-47278868-0
+INTERNAL_IP=$(kubectl get nodes --selector=kubernetes.io/hostname=$NODE_NAME -o json | jq .items[0].status.addresses[0].address --raw-output)
+ssh -J root@127.0.0.1:2222 $USER@$INTERNAL_IP
+```
+
+Execute the commands.
+
+```bash
+sudo mkdir -p /home/starfish_build/starfish-spring/build/
+sudo mkdir -p /home/starfish_build/starfish-core/build/
+```
+
+Kill the pod.
+
+```bash
+kubectl delete pod ssh-server
+```
+
+## Test Jenkins Install
+
+```bash
+FOLDER_NAME=cluster-svc
+RELEASE_NAME=cluster-svc
+helm upgrade \
+    --install \
+    --namespace $CHART_NAMESPACE \
+    --values cluster-svc/test-jenkins-values.yaml \
+    $RELEASE_NAME \
+    $FOLDER_NAME
+```
+
+```bash
+helm upgrade \
+    --install \
+    --namespace cluster-svc \
+    --values jenkins/test-install.yaml \
+    jenkins \
+    jenkins
 ```
