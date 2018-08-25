@@ -12,7 +12,7 @@
 git clone https://github.com/EamonKeane/airflow-GKE-k8sExecutor-helm
 cd airflow-GKE-k8sExecutor-helm
 
-RESOURCE_GROUP=squareroute-develop
+RESOURCE_GROUP=squareroute-dev
 LOCATION=westeurope
 STORAGE_ACCOUNT_NAME=squareroutedevairflow
 POSTGRES_DATABASE_INSTANCE_NAME=squareroute-develop-airflow
@@ -51,7 +51,7 @@ sed -i "" -e "s/location:.*/location: ${LOCATION}/" airflow/azure-airflow-values
 Click download json at the top of the page.
 
 ```bash
-MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-ncri1j04vkd23q19hfc9rpu73k2u9fck.apps.googleusercontent.com.json
+MY_OAUTH2_CREDENTIALS=/Users/Eamon/Downloads/client_secret_937018571230-imha6arufc1radnv9vnsv9jo4vfguslu.apps.googleusercontent.co.json
 CLIENT_ID=$(jq .web.client_id $MY_OAUTH2_CREDENTIALS --raw-output )
 CLIENT_SECRET=$(jq .web.client_secret $MY_OAUTH2_CREDENTIALS --raw-output )
 kubectl create secret generic google-oauth \
@@ -339,7 +339,7 @@ Install the secret in the namespace for pull secrets.
 SECRET_NAME=logistio-deploy-pull-secret
 NAMESPACE=default
 DOCKER_USERNAME=logistio-deploy
-DOCKER_PASSWORD=
+DOCKER_PASSWORD=<GET FROM LASTPASS>
 DOCKER_SERVER=quay.io/logistio
 kubectl create secret docker-registry $SECRET_NAME \
         --namespace $NAMESPACE \
@@ -359,13 +359,12 @@ Add the logistio-deploy-quay-password
 ```bash
 cat <<EOF | kubectl create -f -
 apiVersion: v1
-data:
-  docker_password:
-  <GET FROM LASTPASS>
 kind: Secret
 metadata:
   name: logistio-deploy-quay-password
   namespace: cluster-svc
+stringData:
+  docker_password: <GET FROM LASTPASS>
 type: Opaque
 EOF
 ```
@@ -389,8 +388,8 @@ Create the kubeconfig secrets for develop and production.
 
 ```bash
 NAMESPACE=cluster-svc
-CLUSTER_NAME=squareroute-develop
-RESOURCE_GROUP=squareroute-develop
+CLUSTER_NAME=squareroute-dev
+RESOURCE_GROUP=squareroute-dev
 TEMP_DIRECTORY=$PWD
 KUBECONFIG_FILE_OUTPUT=$PWD/kubeconfig
 az aks get-credentials \
@@ -484,4 +483,8 @@ helm upgrade \
     --values jenkins/test-install.yaml \
     jenkins \
     jenkins
+```
+
+```bash
+
 ```

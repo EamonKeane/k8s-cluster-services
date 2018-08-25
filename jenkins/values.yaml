@@ -28,17 +28,17 @@ jenkins:
       - "staticMethod org.kohsuke.groovy.sandbox.impl.Checker checkedGetProperty java.lang.Object boolean boolean java.lang.Object"
 
     InstallPlugins:
-    - kubernetes:1.10.1
+    - kubernetes:1.12.3
     - workflow-aggregator:2.5
     - credentials-binding:1.16
     - git:3.9.1
-    - blueocean:1.7.1
+    - blueocean:1.7.2
     - pipeline-github-lib:1.0
 
   Agent:
     Enabled: true
     Image: jenkins/jnlp-slave
-    ImageTag: 3.19-1
+    ImageTag: 3.23-1
 
   Persistence:
     Enabled: True
