@@ -136,7 +136,8 @@ helm upgrade \
     --install \
     --namespace $CHART_NAMESPACE \
     $RELEASE_NAME \
-    $FOLDER_NAME
+    $FOLDER_NAME \
+    --values prometheus-values.yaml
 ```
 
 For GKE below 1.10 use the below(<https://github.com/coreos/prometheus-operator/blob/master/contrib/kube-prometheus/docs/GKE-cadvisor-support.md>). Some screens still do not appear to work.

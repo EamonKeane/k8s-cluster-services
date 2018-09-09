@@ -1,25 +1,12 @@
-# Default values for cluster-svc.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-ssl:
-  kibana:
-    enabled: true
-    url: kibana-dev.squareroute.io
-
-prometheus-operator:
+external-dns:
   enabled: true
-
-kube-prometheus:
-  deployKubeScheduler: False
-  deployKubeControllerManager: False
-  enabled: true
+  provider: google
+  google:
+    project: logistio-202814
+    serviceAccountSecret: dns-service-account
 
 elasticsearch:
   enabled: true
-  appVersion: "6.3.1"
-  image:
-    tag: "6.3.1"
 
 kibana:
   enabled: true
@@ -52,13 +39,35 @@ elasticsearch-curator:
       hosts: 
         - cluster-svc-elasticsearch-client
 
-external-dns:
+grafana:
   enabled: true
-  provider: google
-  google:
-    project: logistio-202814
-    serviceAccountSecret: dns-service-account
-
+  service:
+    type: LoadBalancer
+  adminUser: admin
+  adminPassword: EnxCIMolHgmQIdKCjO2qYoFaCs3Pe1RseyI5IEUX
+  datasources:
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+      - name: prometheus
+        type: prometheus
+        url: http://cluster-svc-prometheus-server:80
+        access: proxy
+        isDefault: true
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'default'
+        orgId: 1
+        folder: ''
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+  dashboardsConfigMaps:
+    default: monitoring-dashboards
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
