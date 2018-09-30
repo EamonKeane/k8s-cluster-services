@@ -5,6 +5,20 @@ external-dns:
     project: logistio-202814
     serviceAccountSecret: dns-service-account
 
+metallb:
+  enabled: false
+  configInline: |
+    address-pools:
+    - name: default
+      protocol: layer2
+      # The IP of the node to assign to ingress-nginx as a loadbalancer
+      addresses:
+      - 159.69.94.137/32
+
+prometheus:
+  scrapeAnnotations: true
+
+
 elasticsearch:
   enabled: true
 

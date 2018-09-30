@@ -35,3 +35,7 @@ dependencies:
     version: ^0.7.1
     repository: http://kubernetes-charts.storage.googleapis.com/
     condition: external-dns.enabled
+  - name: metallb
+    version: ^0.7.0
+    repository: http://kubernetes-charts.storage.googleapis.com/
+    condition: metallb.enabled
