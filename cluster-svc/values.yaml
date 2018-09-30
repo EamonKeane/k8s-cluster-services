@@ -7,7 +7,7 @@ external-dns:
 
 metallb:
   enabled: false
-  configInline: |
+  configInline:
     address-pools:
     - name: default
       protocol: layer2
