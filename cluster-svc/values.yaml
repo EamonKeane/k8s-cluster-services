@@ -31,6 +31,8 @@ prometheus:
 
 elasticsearch:
   enabled: true
+  data:
+    terminationGracePeriodSeconds: 120
 
 kibana:
   enabled: true
