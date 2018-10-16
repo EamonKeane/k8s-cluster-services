@@ -5,6 +5,9 @@ external-dns:
     project: logistio-202814
     serviceAccountSecret: dns-service-account
 
+cluster-svc-local-provisioner:
+  enabled: true
+
 metallb:
   enabled: true
   configInline:
@@ -27,7 +30,6 @@ metrics-server:
 
 prometheus:
   scrapeAnnotations: true
-
 
 elasticsearch:
   enabled: true
