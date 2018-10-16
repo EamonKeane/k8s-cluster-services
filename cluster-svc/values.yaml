@@ -6,7 +6,7 @@ external-dns:
     serviceAccountSecret: dns-service-account
 
 cluster-svc-local-provisioner:
-  enabled: true
+  enabled: false
 
 metallb:
   enabled: true

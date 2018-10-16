@@ -32,8 +32,8 @@ dependencies:
 - name: metrics-server
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 2.0.3
-- name: local-provisioner
+- name: cluster-svc-local-provisioner
   repository: file://./vendored-charts/charts/local-provisioner/
   version: 2.0.0
-digest: sha256:76c7231315778a72efbca1885a0c04943e88ce62e2684c5daa3d6da0e3f770b8
-generated: 2018-10-16T17:07:26.44287+01:00
+digest: sha256:c6dc88d8bb68800557f5d0d7aed75658043e90e2f9cedd4fa72d0e8ae1c6a6e3
+generated: 2018-10-16T17:55:09.505465+01:00
