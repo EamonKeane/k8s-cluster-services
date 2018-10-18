@@ -60,6 +60,9 @@ cert-manager:
     defaultIssuerName: letsencrypt-prod
     defaultIssuerKind: ClusterIssuer
 
+cluster-svc-airflow:
+  enabled: false
+
 elasticsearch-curator:
   enabled: true
   config:
