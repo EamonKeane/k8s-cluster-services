@@ -1,0 +1,8 @@
+{
+    "helm": {
+        "repository-url": "https://opensource-helm.squareroute.io/",
+        "repository-name": "opensource-helm",
+        "helm-folder": "cluster-svc"
+    },
+    "buildBranch": "develop | new-deploy"
+}
