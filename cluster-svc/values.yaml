@@ -10,13 +10,13 @@ cluster-svc-local-provisioner:
 
 metallb:
   enabled: true
-  configInline:
-    address-pools:
-    - name: default
-      protocol: layer2
-      # The IP of the node to assign to ingress-nginx as a loadbalancer
-      addresses:
-      - 123.45.67.890/32
+  # configInline:
+  #   address-pools:
+  #   - name: default
+  #     protocol: layer2
+  #     # The IP of the node to assign to ingress-nginx as a loadbalancer
+  #     addresses:
+  #     - 123.45.67.890/32
 
 metrics-server:
   enabled: true
@@ -62,6 +62,28 @@ cert-manager:
 
 cluster-svc-airflow:
   enabled: false
+
+chartmuseum:
+  enabled: true
+  env:
+    open:
+      GOOGLE_BUCKET: opensource-helm
+      ALLOW_OVERWRITE: false
+      DISABLE_API: false
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: "nginx"
+      kubernetes.io/tls-acme: "true"
+    hosts:
+      opensource-helm.squareroute.io:
+        - /charts
+        - /index.yaml
+        - /api/charts
+    tls:
+    - secretName: chartmuseum-server-tls
+      hosts:
+      - opensource-helm.squareroute.io
 
 elasticsearch-curator:
   enabled: true

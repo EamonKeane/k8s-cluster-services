@@ -10,7 +10,7 @@ dependencies:
   version: 1.10.2
 - name: kibana
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 0.16.1
+  version: 0.16.2
 - name: fluentd-elasticsearch
   repository: http://storage.googleapis.com/kubernetes-charts-incubator
   version: 0.7.2
@@ -38,8 +38,11 @@ dependencies:
 - name: cluster-svc-local-provisioner
   repository: file://./vendored-charts/charts/local-provisioner/
   version: 2.0.0
-- name: cluster-svc-airflow
+- name: airflow
   repository: file://./vendored-charts/charts/airflow/
   version: 0.2.0
-digest: sha256:89cacd0fd57a0ba2eac85ade847347c392cdec66d91e8197539dce62d26bdffa
-generated: 2018-10-18T16:22:10.978049+01:00
+- name: chartmuseum
+  repository: http://kubernetes-charts.storage.googleapis.com/
+  version: 1.6.2
+digest: sha256:a1628f4c8192d4577e130a6dbb51df245bd66d9919b5d8a57d7f19deea47220c
+generated: 2018-10-19T10:48:32.048364+01:00
