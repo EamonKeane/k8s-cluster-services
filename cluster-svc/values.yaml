@@ -94,7 +94,7 @@ elasticsearch-curator:
         - cluster-svc-elasticsearch-client
 
 grafana:
-  enabled: false
+  enabled: true
   service:
     type: LoadBalancer
   adminUser: admin
