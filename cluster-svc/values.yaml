@@ -1,5 +1,5 @@
 external-dns:
-  enabled: true
+  enabled: false
   provider: google
   google:
     project: logistio-202814
@@ -9,7 +9,7 @@ cluster-svc-local-provisioner:
   enabled: false
 
 metallb:
-  enabled: true
+  enabled: false
   # configInline:
   #   address-pools:
   #   - name: default
@@ -19,7 +19,7 @@ metallb:
   #     - 123.45.67.890/32
 
 metrics-server:
-  enabled: true
+  enabled: false
   args:
   - --logtostderr
   - --kubelet-insecure-tls
@@ -29,25 +29,26 @@ metrics-server:
 
 
 prometheus:
+  enabled: false
   scrapeAnnotations: true
 
 elasticsearch:
-  enabled: true
+  enabled: false
   data:
     terminationGracePeriodSeconds: 120
 
 kibana:
-  enabled: true
+  enabled: false
   env:
     ELASTICSEARCH_URL: http://cluster-svc-elasticsearch-client:9200
 
 fluentd-elasticsearch:
-  enabled: true
+  enabled: false
   elasticsearch:
     host: cluster-svc-elasticsearch-client
 
 nginx-ingress:
-  enabled: true
+  enabled: false
   controller:
     publishService:
       enabled: true
@@ -55,7 +56,7 @@ nginx-ingress:
       externalTrafficPolicy: Local
 
 cert-manager:
-  enabled: true
+  enabled: false
   ingressShim:
     defaultIssuerName: letsencrypt-prod
     defaultIssuerKind: ClusterIssuer
@@ -64,7 +65,7 @@ cluster-svc-airflow:
   enabled: false
 
 chartmuseum:
-  enabled: true
+  enabled: false
   env:
     open:
       GOOGLE_BUCKET: opensource-helm
@@ -86,14 +87,14 @@ chartmuseum:
       - opensource-helm.squareroute.io
 
 elasticsearch-curator:
-  enabled: true
+  enabled: false
   config:
     elasticsearch:
       hosts: 
         - cluster-svc-elasticsearch-client
 
 grafana:
-  enabled: true
+  enabled: false
   service:
     type: LoadBalancer
   adminUser: admin

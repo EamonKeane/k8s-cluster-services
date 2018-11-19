@@ -1,3 +1,4 @@
+{{- if .Values.grafana.enabled -}}}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,3 +8,4 @@ metadata:
     app.kubernetes.io/component: grafana
 data:
 {{ ($.Files.Glob (printf "dashboards/*" )).AsConfig | indent 2 }}
+{{- end -}}
