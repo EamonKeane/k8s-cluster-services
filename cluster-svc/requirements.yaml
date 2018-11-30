@@ -52,8 +52,8 @@ dependencies:
     repository: file://./vendored-charts/charts/local-provisioner/
     condition: cluster-svc-local-provisioner.enabled
   - name: airflow
-    version: ^0.2.0
-    repository: file://./vendored-charts/charts/airflow/
+    version: ^0.2.0-nfs-latest
+    repository: https://opensource-helm.squareroute.io/
     condition: cluster-svc-airflow.enabled
   - name: chartmuseum
     version: ^1.6.2

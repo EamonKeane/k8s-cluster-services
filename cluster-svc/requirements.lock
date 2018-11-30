@@ -1,28 +1,28 @@
 dependencies:
 - name: grafana
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 1.17.2
+  version: 1.19.0
 - name: prometheus
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 7.3.1
+  version: 7.4.5
 - name: elasticsearch
   repository: http://storage.googleapis.com/kubernetes-charts-incubator
   version: 1.10.2
 - name: kibana
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 0.16.2
+  version: 0.20.0
 - name: fluentd-elasticsearch
   repository: http://storage.googleapis.com/kubernetes-charts-incubator
   version: 0.7.2
 - name: elasticsearch-curator
   repository: http://storage.googleapis.com/kubernetes-charts-incubator
-  version: 0.4.1
+  version: 0.4.3
 - name: nginx-ingress
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 0.29.1
+  version: 0.31.0
 - name: cert-manager
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: v0.5.0
+  version: v0.5.2
 - name: external-dns
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 0.7.8
@@ -31,7 +31,7 @@ dependencies:
   version: 0.8.0
 - name: metrics-server
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 2.0.3
+  version: 2.0.4
 - name: cluster-svc-local-provisioner
   repository: file://./vendored-charts/charts/local-provisioner/
   version: 2.0.0
@@ -39,10 +39,10 @@ dependencies:
   repository: file://./vendored-charts/charts/local-provisioner/
   version: 2.0.0
 - name: airflow
-  repository: file://./vendored-charts/charts/airflow/
-  version: 0.2.0
+  repository: https://opensource-helm.squareroute.io/
+  version: 0.2.0-nfs-latest
 - name: chartmuseum
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 1.6.2
-digest: sha256:a1628f4c8192d4577e130a6dbb51df245bd66d9919b5d8a57d7f19deea47220c
-generated: 2018-10-19T10:48:32.048364+01:00
+digest: sha256:dce81ac1be76d1a9c9b69c0597ee9bab984187b66e6ff4789b023f5d5d713977
+generated: 2018-11-30T12:12:17.745411Z
