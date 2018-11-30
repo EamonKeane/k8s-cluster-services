@@ -24,7 +24,7 @@ dependencies:
     repository: http://storage.googleapis.com/kubernetes-charts-incubator
     condition: cluster-svc.elasticsearch-curator.enabled
   - name: nginx-ingress
-    version: ^0.28.2
+    version: 0.30.0
     repository: http://kubernetes-charts.storage.googleapis.com/
     condition: cluster-svc.nginx-ingress.enabled
   - name: cert-manager
