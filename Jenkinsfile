@@ -19,7 +19,7 @@ pipeline {
         } // container('jnlp')
       } // steps
     } // stage
-    stage('Initialise Helm ROW'){
+    stage('Initialise Helm Jenkins Squareroute'){
       when {
           expression { config.buildBranch.contains(env.BRANCH_NAME) }
       }
