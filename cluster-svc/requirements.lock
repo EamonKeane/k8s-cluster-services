@@ -19,7 +19,7 @@ dependencies:
   version: 0.4.3
 - name: nginx-ingress
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 0.31.0
+  version: 0.30.0
 - name: cert-manager
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: v0.5.2
@@ -41,5 +41,5 @@ dependencies:
 - name: chartmuseum
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 1.6.2
-digest: sha256:cc7496303ff4fa068b83a13b52c6010a1507c2e77c51265b468516d91477d7b1
-generated: 2018-11-30T17:55:17.075347Z
+digest: sha256:2add832c5b1b7e23fb5f516c0fd4a76565b96f76801d3f4ca0c7de6bd59b834b
+generated: 2018-11-30T17:57:05.108521Z
