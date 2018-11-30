@@ -35,14 +35,11 @@ dependencies:
 - name: cluster-svc-local-provisioner
   repository: file://./vendored-charts/charts/local-provisioner/
   version: 2.0.0
-- name: cluster-svc-local-provisioner
-  repository: file://./vendored-charts/charts/local-provisioner/
-  version: 2.0.0
 - name: airflow
   repository: https://opensource-helm.squareroute.io/
   version: 0.2.0-nfs-latest
 - name: chartmuseum
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 1.6.2
-digest: sha256:dce81ac1be76d1a9c9b69c0597ee9bab984187b66e6ff4789b023f5d5d713977
-generated: 2018-11-30T12:12:17.745411Z
+digest: sha256:cc7496303ff4fa068b83a13b52c6010a1507c2e77c51265b468516d91477d7b1
+generated: 2018-11-30T17:55:17.075347Z

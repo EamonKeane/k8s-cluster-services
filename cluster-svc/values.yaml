@@ -1,141 +1,126 @@
-external-dns:
-  enabled: false
-  provider: google
-  google:
-    project: logistio-202814
-    serviceAccountSecret: dns-service-account
+cluster-svc:
+  external-dns:
+    enabled: false
+    provider: google
+    google:
+      project: logistio-202814
+      serviceAccountSecret: dns-service-account
 
-cluster-svc-local-provisioner:
-  enabled: false
+  cluster-svc-local-provisioner:
+    enabled: false
 
-metallb:
-  enabled: false
-  # configInline:
-  #   address-pools:
-  #   - name: default
-  #     protocol: layer2
-  #     # The IP of the node to assign to ingress-nginx as a loadbalancer
-  #     addresses:
-  #     - 123.45.67.890/32
+  metallb:
+    enabled: false
+    # configInline:
+    #   address-pools:
+    #   - name: default
+    #     protocol: layer2
+    #     # The IP of the node to assign to ingress-nginx as a loadbalancer
+    #     addresses:
+    #     - 123.45.67.890/32
 
-metrics-server:
-  enabled: false
-  args:
-  - --logtostderr
-  - --kubelet-insecure-tls
-  - --kubelet-preferred-address-types=InternalIP
+  metrics-server:
+    enabled: false
+    args:
+    - --logtostderr
+    - --kubelet-insecure-tls
+    - --kubelet-preferred-address-types=InternalIP
 
-# enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+  # enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
 
 
-prometheus:
-  enabled: false
-  scrapeAnnotations: true
+  prometheus:
+    enabled: false
+    scrapeAnnotations: true
 
-elasticsearch:
-  enabled: false
-  data:
-    terminationGracePeriodSeconds: 120
-
-kibana:
-  enabled: false
-  env:
-    ELASTICSEARCH_URL: http://cluster-svc-elasticsearch-client:9200
-
-fluentd-elasticsearch:
-  enabled: false
   elasticsearch:
-    host: cluster-svc-elasticsearch-client
+    enabled: false
+    data:
+      terminationGracePeriodSeconds: 120
 
-nginx-ingress:
-  enabled: false
-  controller:
-    publishService:
-      enabled: true
-    service:
-      externalTrafficPolicy: Local
+  kibana:
+    enabled: false
+    env:
+      ELASTICSEARCH_URL: http://cluster-svc-elasticsearch-client:9200
 
-cert-manager:
-  enabled: false
-  ingressShim:
-    defaultIssuerName: letsencrypt-prod
-    defaultIssuerKind: ClusterIssuer
-
-cluster-svc-airflow:
-  enabled: false
-
-chartmuseum:
-  enabled: false
-  env:
-    open:
-      GOOGLE_BUCKET: opensource-helm
-      ALLOW_OVERWRITE: false
-      DISABLE_API: false
-  ingress:
-    enabled: true
-    annotations:
-      kubernetes.io/ingress.class: "nginx"
-      kubernetes.io/tls-acme: "true"
-    hosts:
-      opensource-helm.squareroute.io:
-        - /charts
-        - /index.yaml
-        - /api/charts
-    tls:
-    - secretName: chartmuseum-server-tls
-      hosts:
-      - opensource-helm.squareroute.io
-
-elasticsearch-curator:
-  enabled: false
-  config:
+  fluentd-elasticsearch:
+    enabled: false
     elasticsearch:
-      hosts: 
-        - cluster-svc-elasticsearch-client
+      host: cluster-svc-elasticsearch-client
 
-grafana:
-  enabled: true
-  service:
-    type: LoadBalancer
-  adminUser: admin
-  adminPassword: EnxCIMolHgmQIdKCjO2qYoFaCs3Pe1RseyI5IEUX
-  datasources:
-    datasources.yaml:
-      apiVersion: 1
-      datasources:
-      - name: prometheus
-        type: prometheus
-        url: http://cluster-svc-prometheus-server:80
-        access: proxy
-        isDefault: true
-  dashboardProviders:
-    dashboardproviders.yaml:
-      apiVersion: 1
-      providers:
-      - name: 'default'
-        orgId: 1
-        folder: ''
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/default
-  dashboardsConfigMaps:
-    default: monitoring-dashboards
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #  cpu: 100m
-  #  memory: 128Mi
-  # requests:
-  #  cpu: 100m
-  #  memory: 128Mi
+  nginx-ingress:
+    enabled: false
+    controller:
+      publishService:
+        enabled: true
+      service:
+        externalTrafficPolicy: Local
 
-nodeSelector: {}
+  cert-manager:
+    enabled: false
+    ingressShim:
+      defaultIssuerName: letsencrypt-prod
+      defaultIssuerKind: ClusterIssuer
 
-tolerations: []
+  airflow:
+    enabled: false
 
-affinity: {}
+  chartmuseum:
+    enabled: false
+    env:
+      open:
+        STORAGE_GOOGLE_BUCKET: opensource-helm
+        STORAGE: google
+        ALLOW_OVERWRITE: true
+        DISABLE_API: false
+    ingress:
+      enabled: true
+      annotations:
+        kubernetes.io/ingress.class: "nginx"
+        kubernetes.io/tls-acme: "true"
+      hosts:
+        opensource-helm.squareroute.io:
+          - /charts
+          - /index.yaml
+          - /api/charts
+      tls:
+      - secretName: chartmuseum-server-tls
+        hosts:
+        - opensource-helm.squareroute.io
+
+  elasticsearch-curator:
+    enabled: false
+    config:
+      elasticsearch:
+        hosts: 
+          - cluster-svc-elasticsearch-client
+
+  grafana:
+    enabled: false
+    service:
+      type: LoadBalancer
+    adminUser: admin
+    adminPassword: EnxCIMolHgmQIdKCjO2qYoFaCs3Pe1RseyI5IEUX
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+        - name: prometheus
+          type: prometheus
+          url: http://cluster-svc-prometheus-server:80
+          access: proxy
+          isDefault: true
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/default
+    dashboardsConfigMaps:
+      default: monitoring-dashboards
