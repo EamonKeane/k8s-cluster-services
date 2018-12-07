@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: jenkins-insights-data-py
+  name: jenkins-open-source-helm
 spec:
   containers:
   - name: gcloud-helm
