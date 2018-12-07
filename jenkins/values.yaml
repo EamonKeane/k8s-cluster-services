@@ -9,15 +9,15 @@ jenkins:
     UseSecurity: True
     JavaOpts: "-Dorg.jenkinsci.plugins.durabletask.BourneShellScript.HEARTBEAT_CHECK_INTERVAL=1000"
     ServiceType: ClusterIP
-    HostName: jenkins.squareroute.io
+    # HostName: jenkins.squareroute.io
     Ingress:
       Annotations:
         kubernetes.io/ingress.class: nginx
         kubernetes.io/tls-acme: "true"
       TLS:
       - secretName: jenkins-tls
-        hosts:
-          - jenkins.squareroute.io
+      #   hosts:
+      #     - jenkins.squareroute.io
     ScriptApproval:
       - "method groovy.json.JsonSlurperClassic parseText java.lang.String"
       - "new groovy.json.JsonSlurperClassic"

@@ -1,5 +1,5 @@
 dependencies:
   - name: jenkins
-    version: ^0.16.6
+    version: ^0.25.0
     repository: http://kubernetes-charts.storage.googleapis.com/
     condition: jenkins.enabled
