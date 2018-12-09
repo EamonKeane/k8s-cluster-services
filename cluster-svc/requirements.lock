@@ -1,10 +1,10 @@
 dependencies:
 - name: grafana
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 1.19.0
+  version: 1.20.0
 - name: prometheus
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 7.4.5
+  version: 7.4.6
 - name: elasticsearch
   repository: http://storage.googleapis.com/kubernetes-charts-incubator
   version: 1.10.2
@@ -28,7 +28,7 @@ dependencies:
   version: 0.7.8
 - name: metallb
   repository: http://kubernetes-charts.storage.googleapis.com/
-  version: 0.8.0
+  version: 0.8.2
 - name: metrics-server
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 2.0.4
@@ -41,5 +41,11 @@ dependencies:
 - name: chartmuseum
   repository: http://kubernetes-charts.storage.googleapis.com/
   version: 1.6.2
-digest: sha256:2add832c5b1b7e23fb5f516c0fd4a76565b96f76801d3f4ca0c7de6bd59b834b
-generated: 2018-11-30T17:57:05.108521Z
+- name: monocular
+  repository: https://helm.github.io/monocular
+  version: 1.2.5
+- name: docker-registry
+  repository: http://kubernetes-charts.storage.googleapis.com/
+  version: 1.6.1
+digest: sha256:486c3ae2be0c9c81d3adf11907521714660f8e5b62e609b2db35a31b11aecfa5
+generated: 2018-12-09T13:35:49.921195Z

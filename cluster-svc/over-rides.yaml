@@ -1,0 +1,44 @@
+external-dns:
+  provider: google
+  
+monocular:
+  sync:
+    repos:
+      - name: opensource-helm
+        url: https://opensource-helm.squareroute.io
+        source: logistio
+  ingress:
+    enabled: true
+    hosts:
+      - monocular-test.logistio.ie
+    tls:
+      secretName: monocular-tls
+chartmuseum:
+  ingress:
+    enabled: true
+    hosts:
+      helm-test.logistio.ie:
+        - /charts
+        - /index.yaml
+        - /api/charts
+    tls:
+    - secretName: chartmuseum-server-tls
+      hosts:
+      - helm-test.logistio.ie
+  # open:
+  #   STORAGE_GOOGLE_BUCKET: opensource-helm
+  #   STORAGE: google
+  #   ALLOW_OVERWRITE: true
+  #   DISABLE_API: false
+docker-registry:
+  # enabled: false
+  ingress:
+    enabled: true
+    path: /
+    # Used to create an Ingress record.
+    hosts:
+      - docker-registry-test.logistio.ie
+    tls:
+      - secretName: docker-registry-tls
+        hosts:
+          - docker-registry-test.logistio.ie

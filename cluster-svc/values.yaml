@@ -1,63 +1,123 @@
+tags:
+  core: true
+  ELK: true
+  monitoring: true
+  cloud: true
+  bare-metal: false
+  cicd: false
+
 cluster-svc:
   external-dns:
-    enabled: false
+    # enabled: false
     provider: google
-    google:
-      project: logistio-202814
-      serviceAccountSecret: dns-service-account
+    # google:
+    #   project: logistio-202814
+    #   serviceAccountSecret: dns-service-account
 
   cluster-svc-local-provisioner:
-    enabled: false
+    # enabled: false
+
+  docker-registry:
+    # enabled: false
+    ingress:
+      # enabled: true
+      # path: /
+      # # Used to create an Ingress record.
+      # hosts:
+      #   - docker-registry-test.squareroute.io
+      annotations:
+        kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+      # tls:
+      #   - secretName: docker-registry-tls
+      #     hosts:
+      #       - docker-registry-test.squareroute.io
+
+    persistence:
+      accessMode: 'ReadWriteOnce'
+      enabled: true
+      size: 10Gi
+      # storageClass: '-'
+
+    # set the type of filesystem to use: filesystem, s3
+    storage: filesystem
 
   metallb:
-    enabled: false
-    # configInline:
-    #   address-pools:
-    #   - name: default
-    #     protocol: layer2
-    #     # The IP of the node to assign to ingress-nginx as a loadbalancer
-    #     addresses:
-    #     - 123.45.67.890/32
+    # enabled: false
+    configInline:
+      address-pools:
+      - name: default
+        protocol: layer2
+        # The IP of the node to assign to ingress-nginx as a loadbalancer
+        # addresses:
+        # - 123.45.67.890/32
 
   metrics-server:
-    enabled: false
+    # enabled: false
     args:
     - --logtostderr
     - --kubelet-insecure-tls
     - --kubelet-preferred-address-types=InternalIP
 
   # enable this if you have self-signed certificates, see: https://github.com/kubernetes-incubator/metrics-server
+  monocular:
+    # enabled: false
+    sync:
+      # Image used to perform chart repository syncs
+      repos:
+        - name: opensource-helm
+          url: https://opensource-helm.squareroute.io
+          source: logistio
 
+    ingress:
+      enabled: true
+      hosts:
+        - monocular-test.squareroute.io
+      tls:
+        secretName: monocular-tls
+      annotations:
+        ## Nginx ingress controller (default)
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        kubernetes.io/ingress.class: nginx
+        kubernetes.io/tls-acme: "true"
+        # type of authentication
+        nginx.ingress.kubernetes.io/auth-type: basic
+        # name of the secret that contains the user/password definitions
+        nginx.ingress.kubernetes.io/auth-secret: monocular-basic-auth
+        # message to display with an appropiate context why the authentication is required
+        nginx.ingress.kubernetes.io/auth-realm: "Authentication Required - monocular"
 
   prometheus:
-    enabled: false
+    # enabled: false
     scrapeAnnotations: true
 
   elasticsearch:
-    enabled: false
+    # enabled: false
     data:
       terminationGracePeriodSeconds: 120
 
   kibana:
-    enabled: false
+    # enabled: false
     env:
       ELASTICSEARCH_URL: http://cluster-svc-elasticsearch-client:9200
 
   fluentd-elasticsearch:
-    enabled: false
+    # enabled: false
     elasticsearch:
       host: cluster-svc-elasticsearch-client
 
   nginx-ingress:
-    enabled: false
+    # enabled: false
     controller:
+      config:
+        no-auth-locations: /.well-known/acme-challenge
       publishService:
         enabled: true
       service:
         externalTrafficPolicy: Local
 
   cert-manager:
-    enabled: false
+    # enabled: false
     ingressShim:
       defaultIssuerName: letsencrypt-prod
       defaultIssuerKind: ClusterIssuer
@@ -66,41 +126,42 @@ cluster-svc:
     enabled: false
 
   chartmuseum:
-    enabled: false
+    # enabled: false
     env:
       open:
-        STORAGE_GOOGLE_BUCKET: opensource-helm
-        STORAGE: google
+        STORAGE: local
         ALLOW_OVERWRITE: true
         DISABLE_API: false
     ingress:
-      enabled: true
+      # enabled: true
       annotations:
         kubernetes.io/ingress.class: "nginx"
         kubernetes.io/tls-acme: "true"
-      hosts:
-        opensource-helm.squareroute.io:
-          - /charts
-          - /index.yaml
-          - /api/charts
-      tls:
-      - secretName: chartmuseum-server-tls
-        hosts:
-        - opensource-helm.squareroute.io
+      # hosts:
+      #   opensource-helm.squareroute.io:
+      #     - /charts
+      #     - /index.yaml
+      #     - /api/charts
+      # tls:
+      # - secretName: chartmuseum-server-tls
+      #   hosts:
+      #   - opensource-helm.squareroute.io
 
   elasticsearch-curator:
-    enabled: false
+    # enabled: false
     config:
       elasticsearch:
         hosts: 
           - cluster-svc-elasticsearch-client
 
   grafana:
-    enabled: false
+    # enabled: false
     service:
       type: LoadBalancer
     adminUser: admin
-    adminPassword: EnxCIMolHgmQIdKCjO2qYoFaCs3Pe1RseyI5IEUX
+    auth.anonymous:
+      # enable anonymous access
+      enabled = true
     datasources:
       datasources.yaml:
         apiVersion: 1
