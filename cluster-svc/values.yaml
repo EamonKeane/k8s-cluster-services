@@ -2,7 +2,6 @@ tags:
   core: true
   ELK: true
   monitoring: true
-  cloud: true
   bare-metal: false
   cicd: false
 
@@ -111,6 +110,7 @@ cluster-svc:
     controller:
       config:
         no-auth-locations: /.well-known/acme-challenge
+        proxy-body-size: "1000m"
       publishService:
         enabled: true
       service:

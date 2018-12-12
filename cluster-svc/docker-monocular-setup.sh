@@ -50,9 +50,11 @@ helm upgrade \
      --debug \
      --dry-run > test-output.yaml
 
+kubectl apply -f kubernetes/helm/cluster-svc/cert-manager-cluster-issuer.yaml
+
 helm del --purge cluster-svc
-kubectl delete ns cluster-svc
 kubectl delete apiservice v1beta1.metrics.k8s.io
 kubectl delete crd certificates.certmanager.k8s.io
 kubectl delete crd clusterissuers.certmanager.k8s.io
 kubectl delete crd issuers.certmanager.k8s.io
+kubectl delete ns cluster-svc
